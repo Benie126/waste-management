@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment files - NEVER commit real secrets
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.*
+!**/.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# Build output
+dist/
+build/
+frontend/dist/
+backend/dist/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.install-logs/
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Test / coverage
+coverage/
+
+# Temporary
+*.tsbuildinfo
+.cache/

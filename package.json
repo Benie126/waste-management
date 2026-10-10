@@ -1,0 +1,20 @@
+{
+  "name": "wastelink",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WasteLink - Smart Recyclable Waste Collection and Matching System",
+  "scripts": {
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "db:schema": "mysql -u root -p < database/schema.sql",
+    "db:seed": "npm run seed --prefix backend",
+    "dev:backend": "npm run dev --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "build:frontend": "npm run build --prefix frontend",
+    "typecheck": "npm run typecheck --prefix backend && npm run typecheck --prefix frontend",
+    "test:api": "bash backend/scripts/smoke-test.sh",
+    "test:ui": "node backend/scripts/ui-smoke-test.mjs",
+    "test:console": "node backend/scripts/console-check.mjs",
+    "verify:mongo": "npm run verify:mongo --prefix backend"
+  }
+}

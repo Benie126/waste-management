@@ -1,0 +1,68 @@
+# Optional: run MySQL, MongoDB and RabbitMQ in containers instead of installing
+# them locally. Usage:  docker compose up -d
+#
+# After the containers are healthy, create the schema and seed data:
+#   mysql -h 127.0.0.1 -P 3306 -u root -proot < database/schema.sql
+#   npm run db:seed
+#
+# Then point backend/.env at these services:
+#   MYSQL_PASSWORD=root
+#   MONGODB_URI=mongodb://127.0.0.1:27017/wastelink
+#   RABBITMQ_URL=amqp://wastelink:wastelink@127.0.0.1:5672
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: wastelink-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wastelink
+    ports:
+      - '3306:3306'
+    volumes:
+      - wastelink-mysql-data:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost', '-proot']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mongodb:
+    image: mongo:7
+    container_name: wastelink-mongodb
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - wastelink-mongo-data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: wastelink-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: wastelink
+      RABBITMQ_DEFAULT_PASS: wastelink
+    ports:
+      - '5672:5672'
+      - '15672:15672' # management UI: http://localhost:15672
+    volumes:
+      - wastelink-rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ['CMD', 'rabbitmq-diagnostics', '-q', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  wastelink-mysql-data:
+  wastelink-mongo-data:
+  wastelink-rabbitmq-data:
