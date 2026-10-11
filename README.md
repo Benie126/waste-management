@@ -48,6 +48,14 @@ WasteLink solves this with:
 - **Role-based access control** across four roles.
 - **Asynchronous notifications** delivered through RabbitMQ and stored in MongoDB.
 
+### Main objectives
+
+- Let waste producers post recyclable waste and immediately see which collectors can take it.
+- Automate collector–waste matching using transparent, rule-based scoring (material, service area, availability).
+- Guide every pickup from request through scheduling and collection to completion and feedback.
+- Enforce role-based access control so each of the four roles can only perform its own actions.
+- Deliver asynchronous notifications and keep an auditable system activity log.
+
 ---
 
 ## 2. Technologies
@@ -247,6 +255,24 @@ Frontend (`frontend/.env`):
 | `VITE_GOOGLE_CLIENT_ID` | Google OAuth2 client id (same as backend) |
 
 `.env` files are git-ignored. Only `.env.example` files are committed.
+
+### Google OAuth2 configuration (optional)
+
+Google Sign-In is optional — the app fully works with email/password without it. To enable it:
+
+1. Open the [Google Cloud Console](https://console.cloud.google.com/) and create (or select) a project.
+2. Configure the **OAuth consent screen** (External is fine for testing) and add the test users.
+3. Go to **Credentials → Create credentials → OAuth client ID** and choose **Web application**.
+4. Under **Authorized JavaScript origins**, add your frontend origin. For local development:
+   - `http://localhost:5173`
+5. Copy the generated **Client ID** and **Client secret**.
+6. Put the same values in your environment files (never commit them):
+   - `frontend/.env`: `VITE_GOOGLE_CLIENT_ID=<your-client-id>`
+   - `backend/.env`: `GOOGLE_CLIENT_ID=<your-client-id>` and `GOOGLE_CLIENT_SECRET=<your-client-secret>`
+
+The frontend renders the official Google button (Google Identity Services), receives an ID token, and
+posts it to `POST /api/auth/google`. The backend verifies that token against `GOOGLE_CLIENT_ID` before
+creating a session. Only placeholder values live in the committed `.env.example` files.
 
 ---
 
